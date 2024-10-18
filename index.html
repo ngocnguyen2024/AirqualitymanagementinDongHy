@@ -29,10 +29,14 @@
         
         <h3>Các bài viết phân tích:</h3>
         <ul id="articles-list"></ul>
+
+        <div id="warning" style="display: none; color: red;">
+            <strong>Cảnh báo:</strong> Chất lượng không khí không đạt yêu cầu.
+        </div>
     </div>
 
     <script>
-        const users = []; // Đăng ký người dùng
+        const users = []; // Danh sách người dùng
         document.getElementById('register-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
@@ -75,6 +79,9 @@
                     alert(`Chất lượng không khí hiện tại: ${aqi} (${aqiCategory})`);
                     displayAQIChart(data.data.iaqi);
                     displayDailyAQIChart(); // Gọi hàm để hiển thị biểu đồ hàng ngày
+                    if (aqi > 100) {
+                        document.getElementById('warning').style.display = 'block'; // Hiển thị cảnh báo nếu AQI > 100
+                    }
                 } else {
                     alert('Không thể lấy dữ liệu chất lượng không khí.');
                 }
