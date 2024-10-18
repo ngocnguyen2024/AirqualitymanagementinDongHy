@@ -3,54 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Chất lượng Không khí Huyện Đồng Hỷ</title>
+    <title>Chất lượng không khí huyện Đồng Hỷ</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div id="auth">
-        <h2>Đăng ký</h2>
+        <h1>Đăng Nhập / Đăng Ký</h1>
         <form id="register-form">
             <input type="text" id="username" placeholder="Tên đăng nhập" required>
             <input type="password" id="password" placeholder="Mật khẩu" required>
-            <button type="submit">Đăng ký</button>
+            <button type="submit">Đăng Ký</button>
         </form>
-
-        <h2>Đăng nhập</h2>
         <form id="login-form">
             <input type="text" id="login-username" placeholder="Tên đăng nhập" required>
             <input type="password" id="login-password" placeholder="Mật khẩu" required>
-            <button type="submit">Đăng nhập</button>
+            <button type="submit">Đăng Nhập</button>
         </form>
     </div>
 
-    <div id="main-content" style="display:none;">
-        <h1>Chất lượng Không khí Huyện Đồng Hỷ</h1>
-        <canvas id="airQualityChart1" width="400" height="200"></canvas>
-        <canvas id="airQualityChart2" width="400" height="200"></canvas>
-        <canvas id="airQualityChart3" width="400" height="200"></canvas>
-        <canvas id="airQualityChart4" width="400" height="200"></canvas>
+    <div id="main-content" style="display: none;">
+        <h2>Chất lượng không khí huyện Đồng Hỷ</h2>
+        <canvas id="airQualityChart" width="400" height="200"></canvas>
+        <canvas id="dailyAQIChart" width="400" height="200"></canvas>
         
-        <h2>Các bài viết phân tích</h2>
+        <h3>Các bài viết phân tích:</h3>
         <ul id="articles-list"></ul>
     </div>
 
     <script>
-        const users = [];
-
-        // Đăng ký người dùng
+        const users = []; // Đăng ký người dùng
         document.getElementById('register-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-
-            const userExists = existingUsers.some(u => u.username === username);
+            const userExists = users.some(u => u.username === username);
             if (userExists) {
                 alert('Tên đăng nhập đã tồn tại!');
             } else {
-                existingUsers.push({ username, password });
-                localStorage.setItem('users', JSON.stringify(existingUsers));
+                users.push({ username, password });
                 alert('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.');
             }
         });
@@ -60,9 +51,7 @@
             e.preventDefault();
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-            const user = existingUsers.find(u => u.username === username && u.password === password);
-
+            const user = users.find(u => u.username === username && u.password === password);
             if (user) {
                 document.getElementById('auth').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
@@ -77,13 +66,15 @@
             const apiKey = '7ddf9100e89da55116139544d0fa21e15d4038ee'; // Thay 'YOUR_API_KEY' bằng API key của bạn
             const city = 'Thai Nguyen'; // Tên thành phố bạn muốn lấy dữ liệu
             const url = `https://api.waqi.info/feed/${city}/?token=${apiKey}`;
-
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 if (data.status === "ok") {
-                    const aqiData = data.data.iaqi;
-                    displayAQICharts(aqiData);
+                    const aqi = data.data.aqi;
+                    const aqiCategory = getAQICategory(aqi);
+                    alert(`Chất lượng không khí hiện tại: ${aqi} (${aqiCategory})`);
+                    displayAQIChart(data.data.iaqi);
+                    displayDailyAQIChart(); // Gọi hàm để hiển thị biểu đồ hàng ngày
                 } else {
                     alert('Không thể lấy dữ liệu chất lượng không khí.');
                 }
@@ -92,27 +83,28 @@
             }
         }
 
+        // Hàm phân loại chất lượng không khí
+        function getAQICategory(aqi) {
+            if (aqi <= 50) return 'Tốt';
+            else if (aqi <= 100) return 'Trung bình';
+            else if (aqi <= 150) return 'Kém';
+            else if (aqi <= 200) return 'Xấu';
+            else if (aqi <= 300) return 'Rất xấu';
+            else return 'Nguy hiểm';
+        }
+
         // Hàm hiển thị biểu đồ chất lượng không khí
-        function displayAQICharts(iaqData) {
-            const ctx1 = document.getElementById('airQualityChart1').getContext('2d');
-            const ctx2 = document.getElementById('airQualityChart2').getContext('2d');
-            const ctx3 = document.getElementById('airQualityChart3').getContext('2d');
-            const ctx4 = document.getElementById('airQualityChart4').getContext('2d');
-
+        function displayAQIChart(iaqData) {
+            const ctx = document.getElementById('airQualityChart').getContext('2d');
             const labels = Object.keys(iaqData);
-            const valuesPM25 = [iaqData.pm25.v]; // Giá trị PM2.5
-            const valuesPM10 = [iaqData.pm10.v]; // Giá trị PM10
-            const valuesCO2 = [iaqData.co2.v]; // Giá trị CO2
-            const valuesO3 = [iaqData.o3.v]; // Giá trị O3
-
-            // Biểu đồ PM2.5
-            new Chart(ctx1, {
+            const values = Object.values(iaqData).map(item => item.v); // Lấy giá trị AQI cho từng chỉ số
+            new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['PM2.5'],
+                    labels: labels,
                     datasets: [{
-                        label: 'PM2.5',
-                        data: valuesPM25,
+                        label: 'Chỉ số chất lượng không khí',
+                        data: values,
                         backgroundColor: 'rgba(75, 192, 192, 0.6)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
@@ -120,67 +112,38 @@
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero: true }
+                        y: {
+                            beginAtZero: true,
+                        }
                     }
                 }
             });
+        }
 
-            // Biểu đồ PM10
-            new Chart(ctx2, {
-                type: 'bar',
+        // Hàm hiển thị biểu đồ AQI hàng ngày (Giả lập dữ liệu)
+        function displayDailyAQIChart() {
+            const ctx = document.getElementById('dailyAQIChart').getContext('2d');
+            const labels = ['Ngày 1', 'Ngày 2', 'Ngày 3', 'Ngày 4', 'Ngày 5']; // Tên các ngày
+            const data = [70, 85, 50, 120, 90]; // Dữ liệu AQI giả lập
+
+            new Chart(ctx, {
+                type: 'line',
                 data: {
-                    labels: ['PM10'],
+                    labels: labels,
                     datasets: [{
-                        label: 'PM10',
-                        data: valuesPM10,
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        label: 'Chỉ số AQI hàng ngày',
+                        data: data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
+                        borderWidth: 2,
+                        fill: true
                     }]
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            // Biểu đồ CO2
-            new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ['CO2'],
-                    datasets: [{
-                        label: 'CO2',
-                        data: valuesCO2,
-                        backgroundColor: 'rgba(255, 206, 86, 0.6)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
-            // Biểu đồ O3
-            new Chart(ctx4, {
-                type: 'bar',
-                data: {
-                    labels: ['O3'],
-                    datasets: [{
-                        label: 'O3',
-                        data: valuesO3,
-                        backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true }
+                        y: {
+                            beginAtZero: true,
+                        }
                     }
                 }
             });
@@ -201,9 +164,7 @@
         }
 
         // Thêm bài viết vào danh sách khi trang được tải
-        window.onload = function() {
-            addArticles();
-        };
+        addArticles();
     </script>
 </body>
 </html>
