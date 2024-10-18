@@ -98,3 +98,18 @@ h3 {
     margin-top: 20px;
     font-size: 1.2em;
 }
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://cms.thainguyen.vn/documents/445171/10213052/anh+bia+du+lich.jpg/9926352a-f368-48f6-b958-7f9618fdd51b?t=1674098401705'); /* Thay 'your-background-image-url.jpg' bằng URL hình nền của bạn */
+    background-size: cover;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+form {
+    display: flex;
