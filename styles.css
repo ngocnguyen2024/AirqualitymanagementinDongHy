@@ -1,86 +1,67 @@
-/* Reset CSS cho trang web */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Kiểu cho body */
 body {
     font-family: Arial, sans-serif;
+    background-image: url('https://cms.thainguyen.vn/documents/445171/10213052/anh+bia+du+lich.jpg/9926352a-f368-48f6-b958-7f9618fdd51b?t=1674098401705'); /* Thay 'your-background-image-url.jpg' bằng URL hình nền của bạn */
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
     color: #333;
-    background-image: url('https://cms.thainguyen.vn/documents/445171/10213052/anh+bia+du+lich.jpg/9926352a-f368-48f6-b958-7f9618fdd51b?t=1674098401705'); /* Đường dẫn tới ảnh nền */
-    background-size: cover; /* Làm cho ảnh phủ kín */
-    background-position: center; /* Căn giữa ảnh */
 }
 
-/* Kiểu cho header */
-header {
-    background-color: rgba(255, 255, 255, 0.8); /* Nền trong suốt */
-    padding: 20px;
+h1, h2 {
     text-align: center;
+    color: #ffffff; /* Màu chữ cho tiêu đề */
 }
 
-/* Kiểu cho tiêu đề */
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
+#auth {
+    background-color: rgba(0, 0, 0, 0.7); /* Màu nền mờ */
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 50px auto; /* Căn giữa */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Kiểu cho nav */
-nav ul {
-    list-style-type: none;
-}
-
-nav ul li {
-    display: inline;
-    margin: 0 15px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-}
-
-/* Kiểu cho các form */
 form {
     display: flex;
     flex-direction: column;
-    max-width: 300px;
-    margin: 20px auto;
+    margin: 10px 0;
 }
 
-form input {
-    margin-bottom: 10px;
+input[type="text"],
+input[type="password"] {
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin: 5px 0;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    font-size: 16px;
 }
 
-/* Kiểu cho nút */
 button {
     padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
+    background-color: #28a745; /* Màu xanh lá cây */
     color: white;
-    font-weight: bold;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
-    background-color: #0056b3; /* Màu khi hover */
+    background-color: #218838; /* Màu xanh đậm khi hover */
 }
 
-/* Kiểu cho main content */
-main {
+#main-content {
+    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ cho nội dung chính */
     padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 800px; /* Căn giữa nội dung chính */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Kiểu cho các bài viết */
-h3 {
-    margin-top: 20px;
+canvas {
+    margin: 20px auto; /* Căn giữa biểu đồ */
 }
 
 #articles-list {
@@ -89,27 +70,8 @@ h3 {
 }
 
 #articles-list li {
+    background-color: rgba(200, 200, 200, 0.8);
+    margin: 5px 0;
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-radius: 5px;
 }
-
-/* Kiểu cho cảnh báo */
-#air-quality-alert {
-    margin-top: 20px;
-    font-size: 1.2em;
-}
-body {
-    font-family: Arial, sans-serif;
-    background-image: url('https://cms.thainguyen.vn/documents/445171/10213052/anh+bia+du+lich.jpg/9926352a-f368-48f6-b958-7f9618fdd51b?t=1674098401705'); /* Thay 'your-background-image-url.jpg' bằng URL hình nền của bạn */
-    background-size: cover;
-    color: white;
-    margin: 0;
-    padding: 20px;
-}
-
-h1, h2 {
-    text-align: center;
-}
-
-form {
-    display: flex;
